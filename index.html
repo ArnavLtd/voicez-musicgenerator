@@ -587,7 +587,7 @@
           <textarea id="promptText" placeholder="Write a detailed description of the music you want...&#10;Example: A peaceful ambient track with soft piano, warm strings, and gentle rain. Perfect for meditation."></textarea>
         </div>
 
-        <!-- Prompt Enhancers (now 8 toggles) -->
+        <!-- Prompt Enhancers (8 toggles) -->
         <div class="form-group">
           <label style="text-transform:none; font-size:0.8rem;">⚡ Prompt Enhancers</label>
           <div class="enhancer-group">
@@ -725,7 +725,8 @@
 
 <script>
   // ─── CONFIGURATION ──────────────────────────────────────────
-  const API_BASE = 'http://localhost:3000';
+  // Empty string = use the current page's origin (works on any device)
+  const API_BASE = '';
 
   let progressInterval;
   let currentProgress = 0;
@@ -765,7 +766,7 @@
       return null;
     }
 
-    // Append enhancer phrases based on checkboxes (now 8)
+    // Append enhancer phrases based on checkboxes (8)
     const enhancers = [];
     if (document.getElementById('enhanceHighQuality').checked) enhancers.push('High quality,');
     if (document.getElementById('enhanceProMix').checked) enhancers.push('professional mixing and mastering,');
