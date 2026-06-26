@@ -88,8 +88,6 @@
       box-shadow: 0 0 15px rgba(217,70,239,0.4);
       font-size: 1.5rem;
     }
-    .brand-icon svg { width:20px; height:20px; color:#fff; }
-
     .stats-counter {
       display: flex;
       align-items: center;
@@ -175,12 +173,18 @@
       font-weight: 700;
       letter-spacing: -.04em;
       line-height: 1.2;
-      margin-bottom: 20px;
+      margin-bottom: 8px;
     }
     .hero-title span {
       background: linear-gradient(to right, var(--accent2), var(--accent), var(--accent3));
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
+    }
+    .prompt-hint {
+      font-size: 0.95rem;
+      color: var(--text2);
+      margin-bottom: 24px;
+      font-weight: 400;
     }
 
     .app-window {
@@ -236,8 +240,12 @@
       outline: none;
       border-color: var(--accent);
     }
+    .form-group textarea {
+      min-height: 120px;
+      resize: vertical;
+    }
 
-    /* Reference Audio Upload (active) */
+    /* Reference Audio Upload */
     .ref-upload {
       border: 2px dashed var(--border);
       border-radius: var(--r12);
@@ -251,78 +259,57 @@
       gap: 6px;
       transition: border-color 0.3s;
     }
-    .ref-upload:hover {
-      border-color: var(--accent3);
-    }
+    .ref-upload:hover { border-color: var(--accent3); }
     .ref-upload svg { color: var(--text3); width: 28px; height: 28px; }
     .ref-upload strong { color: var(--text2); font-weight: 500; }
     .ref-upload span { font-size: 0.8rem; color: var(--text3); }
 
-    /* Tag Input & Chips */
-    .tag-container {
+    /* Prompt Enhancers */
+    .enhancer-group {
       display: flex;
       flex-wrap: wrap;
-      gap: 8px;
-      margin-bottom: 8px;
-      min-height: 36px;
-      align-items: center;
+      gap: 10px;
+      margin-top: 8px;
     }
-    .tag-chip {
-      background: rgba(139,92,246,0.15);
-      border: 1px solid rgba(139,92,246,0.3);
+    .enhancer-toggle {
+      background: rgba(6,182,212,0.08);
+      border: 1px solid rgba(6,182,212,0.2);
       border-radius: 50px;
-      padding: 4px 14px;
-      font-size: 0.8rem;
-      font-weight: 500;
-      color: var(--text);
-      display: inline-flex;
+      padding: 6px 14px;
+      display: flex;
       align-items: center;
       gap: 6px;
       cursor: pointer;
       transition: all 0.2s;
     }
-    .tag-chip:hover {
-      background: rgba(217,70,239,0.2);
+    .enhancer-toggle input[type="checkbox"] {
+      width: 14px;
+      height: 14px;
+      accent-color: var(--accent3);
+      margin: 0;
     }
-    .tag-chip::after {
-      content: '×';
-      margin-left: 4px;
-      font-weight: 700;
-      opacity: 0.6;
+    .enhancer-toggle label {
+      text-transform: none;
+      font-weight: 500;
+      font-size: 0.8rem;
+      color: var(--text2);
+      margin: 0;
+      cursor: pointer;
     }
-    .tag-input {
-      width: 100%;
+    .enhancer-toggle:hover {
+      background: rgba(6,182,212,0.15);
+      border-color: var(--accent3);
+    }
+
+    /* Style Presets */
+    .preset-select {
       background: rgba(0,0,0,0.3);
       border: 1px solid var(--border);
       border-radius: var(--r12);
-      padding: 12px 16px;
+      padding: 10px 16px;
       color: var(--text);
-      font-size: 0.95rem;
-    }
-
-    /* Style Chips (suggestions) */
-    .style-chips {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-top: 10px;
-    }
-    .chip {
-      background: rgba(255,255,255,0.04);
-      border: 1px solid var(--border);
-      border-radius: 50px;
-      padding: 6px 14px;
-      color: var(--text2);
-      font-size: 0.8rem;
-      font-weight: 500;
-      cursor: pointer;
-      transition: all 0.2s;
-      font-family: 'Inter', sans-serif;
-    }
-    .chip:hover {
-      background: rgba(6,182,212,0.12);
-      border-color: var(--accent3);
-      color: var(--text);
+      font-size: 0.9rem;
+      margin-bottom: 10px;
     }
 
     /* Duration Slider */
@@ -460,7 +447,7 @@
     }
     .privacy-row svg { width:18px; height:18px; flex-shrink:0; }
 
-    /* Features & Coming Soon sections (unchanged) */
+    /* Features & Coming Soon */
     .features-section { padding:40px 20px 80px; }
     .features-inner { max-width:1080px; margin:0 auto; }
     .section-header { text-align:center; margin-bottom:40px; }
@@ -538,6 +525,7 @@
   <div class="hero-inner">
     <div class="hero-badge">✦ Custom BGM Studio</div>
     <h1 class="hero-title">Compose Music <br /><span>in seconds.</span></h1>
+    <p class="prompt-hint">✨ Try to write richer prompts to get a satisfying output.</p>
 
     <div class="app-window" id="appBox">
       <!-- UPLOAD STATE -->
@@ -547,9 +535,9 @@
           <input type="text" id="songTitle" placeholder="My BGM Track" />
         </div>
 
-        <!-- Reference Audio Upload (active) -->
+        <!-- Reference Audio (optional) -->
         <div class="form-group">
-          <label>🎛️ Reference Audio</label>
+          <label>🎛️ Reference Audio <span style="text-transform:none; font-weight:400; color:var(--text3);">(optional)</span></label>
           <div class="ref-upload" id="refUploadBox">
             <input type="file" id="refAudioFile" accept="audio/*" style="display:none" onchange="handleRefAudio(this)" />
             <div id="refDropZone" onclick="document.getElementById('refAudioFile').click()">
@@ -560,28 +548,81 @@
           </div>
         </div>
 
-        <!-- AI Styles Tag Input -->
-        <div class="form-group" style="margin-top:20px;">
-          <label style="font-size:1rem; text-transform:none; color:var(--text);">🤖 AI Styles</label>
-          <div class="tag-container" id="tagContainer"></div>
-          <input type="text" id="tagInput" placeholder="Type a style and press Space or Enter…" class="tag-input" />
-          <div class="style-chips" id="suggestionChips">
-            <span class="chip" onclick="addTag('#Pop')">#Pop</span>
-            <span class="chip" onclick="addTag('#Rock')">#Rock</span>
-            <span class="chip" onclick="addTag('#Electronic')">#Electronic</span>
-            <span class="chip" onclick="addTag('#Cinematic')">#Cinematic</span>
-            <span class="chip" onclick="addTag('#Happy')">#Happy</span>
-            <span class="chip" onclick="addTag('#Dark')">#Dark</span>
-            <span class="chip" onclick="addTag('#Piano')">#Piano</span>
-            <span class="chip" onclick="addTag('#Synth')">#Synth</span>
-            <span class="chip" onclick="addTag('#Ambient')">#Ambient</span>
-            <span class="chip" onclick="addTag('#Upbeat')">#Upbeat</span>
-            <span class="chip" onclick="addTag('#Orchestral')">#Orchestral</span>
-            <span class="chip" onclick="addTag('#Jazz')">#Jazz</span>
-            <span class="chip" onclick="addTag('#FastRap')">#FastRap</span>
-            <span class="chip" onclick="addTag('#LoFi')">#LoFi</span>
-            <span class="chip" onclick="addTag('#EDM')">#EDM</span>
-            <span class="chip" onclick="addTag('#Chill')">#Chill</span>
+        <!-- Style Preset (much larger list) -->
+        <div class="form-group">
+          <label>🎼 Style Preset (auto‑fills description)</label>
+          <select id="presetSelect" class="preset-select">
+            <option value="">-- Choose a preset --</option>
+            <option value="Catchy pop instrumental with bright synths, punchy drums, and an uplifting melody.">Pop</option>
+            <option value="Powerful rock track with distorted guitars, driving drums, and energetic bass.">Rock</option>
+            <option value="Smooth hip-hop beat with deep 808s, crisp hi-hats, and a laid-back groove.">Hip-Hop</option>
+            <option value="Hard-hitting rap beat with heavy bass, trap drums, and aggressive energy.">Rap</option>
+            <option value="High-energy EDM instrumental with big drops, soaring synths, and festival energy.">EDM</option>
+            <option value="Classic house music with a four-on-the-floor beat, funky bassline, and uplifting chords.">House</option>
+            <option value="Dark techno track with driving percussion, industrial textures, and hypnotic rhythms.">Techno</option>
+            <option value="Heavy dubstep with wobble bass, glitchy effects, and intense drops.">Dubstep</option>
+            <option value="Grand classical orchestral piece with strings, brass, and woodwinds, dramatic and emotional.">Classical</option>
+            <option value="Smooth jazz with brushed drums, walking bass, piano, and saxophone solos.">Jazz</option>
+            <option value="Slow blues instrumental with soulful guitar, harmonica, and a steady shuffle beat.">Blues</option>
+            <option value="Modern R&B instrumental with smooth keys, groovy bass, and sensual rhythms.">R&B</option>
+            <option value="Soulful track with warm organ, funky guitar, and a heartfelt groove.">Soul</option>
+            <option value="Country instrumental with acoustic guitar, fiddle, and a steady country beat.">Country</option>
+            <option value="Folk music with acoustic guitars, gentle percussion, and earthy melodies.">Folk</option>
+            <option value="Heavy metal track with double bass drums, shredding guitars, and aggressive riffs.">Metal</option>
+            <option value="Fast punk rock with distorted guitars, driving drums, and raw energy.">Punk</option>
+            <option value="Reggae instrumental with offbeat guitar, laid-back bass, and relaxed drums.">Reggae</option>
+            <option value="Funky instrumental with tight bass, wah-wah guitar, horns, and a groovy rhythm.">Funk</option>
+            <option value="Disco track with funky bass, strings, and a danceable beat.">Disco</option>
+            <option value="Latin instrumental with salsa rhythms, piano montuno, percussion, and brass.">Latin</option>
+            <option value="Afrobeat music with polyrhythmic drums, funky bass, and horn section.">Afrobeat</option>
+            <option value="Gospel instrumental with organ, choir pads, and uplifting chord progressions.">Gospel</option>
+            <option value="Calm ambient soundscape with slow evolving pads, subtle textures, and a meditative feel.">Ambient</option>
+            <option value="Ska instrumental with upbeat offbeat guitar, horns, and a walking bassline.">Ska</option>
+          </select>
+        </div>
+
+        <!-- Rich Prompt Area -->
+        <div class="form-group">
+          <label>✨ Describe Your Music</label>
+          <textarea id="promptText" placeholder="Write a detailed description of the music you want...&#10;Example: A peaceful ambient track with soft piano, warm strings, and gentle rain. Perfect for meditation."></textarea>
+        </div>
+
+        <!-- Prompt Enhancers (now 8 toggles) -->
+        <div class="form-group">
+          <label style="text-transform:none; font-size:0.8rem;">⚡ Prompt Enhancers</label>
+          <div class="enhancer-group">
+            <div class="enhancer-toggle">
+              <input type="checkbox" id="enhanceHighQuality" />
+              <label for="enhanceHighQuality">High Quality</label>
+            </div>
+            <div class="enhancer-toggle">
+              <input type="checkbox" id="enhanceProMix" />
+              <label for="enhanceProMix">Pro Mixing</label>
+            </div>
+            <div class="enhancer-toggle">
+              <input type="checkbox" id="enhanceCinematic" />
+              <label for="enhanceCinematic">Cinematic Depth</label>
+            </div>
+            <div class="enhancer-toggle">
+              <input type="checkbox" id="enhanceBass" />
+              <label for="enhanceBass">Deep Bass</label>
+            </div>
+            <div class="enhancer-toggle">
+              <input type="checkbox" id="enhanceWide" />
+              <label for="enhanceWide">Wide Stereo</label>
+            </div>
+            <div class="enhancer-toggle">
+              <input type="checkbox" id="enhanceMaster" />
+              <label for="enhanceMaster">Mastered</label>
+            </div>
+            <div class="enhancer-toggle">
+              <input type="checkbox" id="enhanceAutotune" />
+              <label for="enhanceAutotune">Autotune</label>
+            </div>
+            <div class="enhancer-toggle">
+              <input type="checkbox" id="enhanceWarmAnalog" />
+              <label for="enhanceWarmAnalog">Warm Analog</label>
+            </div>
           </div>
         </div>
 
@@ -647,7 +688,7 @@
   </div>
 </section>
 
-<!-- PREMIUM SERVICES & COMING SOON (unchanged) -->
+<!-- PREMIUM SERVICES & COMING SOON -->
 <section class="features-section" id="services">
   <div class="features-inner">
     <div class="section-header">
@@ -708,57 +749,42 @@
     }
   }
 
-  // ─── TAG INPUT LOGIC ──────────────────────────────────────
-  const tagContainer = document.getElementById('tagContainer');
-  const tagInput = document.getElementById('tagInput');
-  let tags = [];
-
-  // Render tags as removable chips
-  function renderTags() {
-    tagContainer.innerHTML = '';
-    tags.forEach((tag, index) => {
-      const chip = document.createElement('span');
-      chip.className = 'tag-chip';
-      chip.textContent = tag;
-      chip.addEventListener('click', () => {
-        tags.splice(index, 1);
-        renderTags();
-      });
-      tagContainer.appendChild(chip);
-    });
-  }
-
-  // Add a tag if not already present (accepts with or without #)
-  function addTag(tagText) {
-    tagText = tagText.trim();
-    if (!tagText) return;
-    // Ensure tag starts with #
-    if (!tagText.startsWith('#')) tagText = '#' + tagText;
-    if (!tags.includes(tagText)) {
-      tags.push(tagText);
-      renderTags();
-    }
-    tagInput.value = '';
-    tagInput.focus();
-  }
-
-  // Handle keyboard events in tag input
-  tagInput.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter' || e.key === ' ') {
-      e.preventDefault();
-      const value = tagInput.value.trim();
-      if (value) {
-        // Remove spaces inside the typed tag (e.g., "fast rap" → "fastrap")
-        const cleaned = value.replace(/\s+/g, '');
-        if (cleaned) {
-          addTag('#' + cleaned);
-        }
-      }
-      tagInput.value = '';
+  // ─── PRESET FILL ─────────────────────────────────────────────
+  document.getElementById('presetSelect').addEventListener('change', function() {
+    if (this.value) {
+      document.getElementById('promptText').value = this.value;
     }
   });
 
-  // Suggestion chips are in HTML and call addTag directly
+  // ─── BUILD FINAL PROMPT ──────────────────────────────────────
+  function buildFinalPrompt() {
+    const title = document.getElementById('songTitle').value.trim() || 'Untitled';
+    let userPrompt = document.getElementById('promptText').value.trim();
+    if (!userPrompt) {
+      showToast('error', 'Please write a description of the music you want.');
+      return null;
+    }
+
+    // Append enhancer phrases based on checkboxes (now 8)
+    const enhancers = [];
+    if (document.getElementById('enhanceHighQuality').checked) enhancers.push('High quality,');
+    if (document.getElementById('enhanceProMix').checked) enhancers.push('professional mixing and mastering,');
+    if (document.getElementById('enhanceCinematic').checked) enhancers.push('cinematic depth and wide dynamics,');
+    if (document.getElementById('enhanceBass').checked) enhancers.push('deep punchy bass,');
+    if (document.getElementById('enhanceWide').checked) enhancers.push('wide stereo field,');
+    if (document.getElementById('enhanceMaster').checked) enhancers.push('fully mastered track,');
+    if (document.getElementById('enhanceAutotune').checked) enhancers.push('with polished autotune effect,');
+    if (document.getElementById('enhanceWarmAnalog').checked) enhancers.push('warm analog tape saturation,');
+
+    let enhancerText = enhancers.join(' ');
+    if (enhancerText) {
+      enhancerText = enhancerText.charAt(0).toUpperCase() + enhancerText.slice(1);
+      userPrompt = enhancerText + ' ' + userPrompt;
+    }
+
+    const finalPrompt = `Title: ${title}. ${userPrompt} Instrumental background music.`;
+    return finalPrompt;
+  }
 
   // ─── TOAST ──────────────────────────────────────────────────
   function showToast(type, msg) {
@@ -790,8 +816,6 @@
     player.pause();
     player.src = '';
     document.getElementById('downloadLink').href = '#';
-    tags = [];
-    renderTags();
     referenceFile = null;
     document.getElementById('refFileName').textContent = '';
     document.getElementById('refAudioFile').value = '';
@@ -823,28 +847,20 @@
 
   // ─── GENERATE MUSIC ──────────────────────────────────────────
   async function generateMusic() {
-    // Scroll to top
     window.scrollTo({ top: 0, behavior: 'smooth' });
 
-    const title = document.getElementById('songTitle').value.trim() || 'Untitled';
+    const finalPrompt = buildFinalPrompt();
+    if (!finalPrompt) return;
+
     const duration = parseInt(document.getElementById('durationSlider').value, 10);
 
-    if (tags.length === 0) {
-      showToast('error', 'Please add at least one style tag.');
-      return;
-    }
-
-    const styleString = tags.join(' ');
-    const prompt = `Title: ${title}. Styles: ${styleString}. Instrumental background music.`;
-
-    // Switch UI
     document.getElementById('uploadState').style.display = 'none';
     document.getElementById('queueState').style.display = 'flex';
     document.getElementById('generateBtn').disabled = true;
 
     try {
       const formData = new FormData();
-      formData.append('prompt', prompt);
+      formData.append('prompt', finalPrompt);
       formData.append('duration', duration);
       if (referenceFile) {
         formData.append('referenceAudio', referenceFile);
