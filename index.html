@@ -1,0 +1,976 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>⚡VOICE-Z — BGM Studio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+    :root {
+      --bg: #090614;
+      --surface: rgba(20,15,35,0.5);
+      --surface2: rgba(35,25,55,0.6);
+      --border: rgba(255,255,255,0.08);
+      --border-glow: rgba(139,92,246,0.3);
+      --text: #F8FAFC;
+      --text2: #94A3B8;
+      --text3: #64748B;
+      --accent: #8B5CF6;
+      --accent2: #D946EF;
+      --accent3: #06B6D4;
+      --fiverr: #1DBF73;
+      --youtube: #FF0000;
+      --r8:8px; --r12:16px; --r16:20px; --r24:28px;
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+      line-height: 1.6;
+      position: relative;
+      overflow-x: hidden;
+    }
+    body::before, body::after {
+      content: ''; position: fixed; border-radius: 50%; filter: blur(120px); z-index: -1; pointer-events: none;
+    }
+    body::before {
+      top: -10%; left: -10%; width: 50vw; height: 50vw;
+      background: radial-gradient(circle, rgba(139,92,246,0.15) 0%, transparent 70%);
+    }
+    body::after {
+      bottom: -10%; right: -10%; width: 60vw; height: 60vw;
+      background: radial-gradient(circle, rgba(6,182,212,0.12) 0%, transparent 70%);
+    }
+
+    /* Topbar */
+    .topbar {
+      background: rgba(9,6,20,0.6);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+    }
+    .topbar-inner {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 0 20px;
+      height: 70px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--text);
+      letter-spacing: -.02em;
+      text-decoration: none;
+    }
+    .brand-icon {
+      width: 36px;
+      height: 36px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      border-radius: 12px;
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+      box-shadow: 0 0 15px rgba(217,70,239,0.4);
+      font-size: 1.5rem;
+    }
+    .brand-icon svg { width:20px; height:20px; color:#fff; }
+
+    .stats-counter {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text2);
+      background: rgba(255,255,255,0.05);
+      padding: 6px 16px;
+      border-radius: 50px;
+      border: 1px solid var(--border);
+    }
+    .stats-counter #liveCounter {
+      color: var(--text);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.95rem;
+    }
+    .pulse-dot {
+      width: 8px;
+      height: 8px;
+      background: #10B981;
+      border-radius: 50%;
+      box-shadow: 0 0 10px #10B981;
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse { 0% { opacity:1; } 50% { opacity:0.4; } 100% { opacity:1; } }
+
+    .topbar-right { display: flex; align-items:center; gap:12px; }
+    .btn-premium {
+      background: linear-gradient(var(--surface2), var(--surface2)) padding-box,
+                  linear-gradient(135deg, var(--accent), var(--accent3)) border-box;
+      border: 1px solid transparent;
+      color: var(--text);
+      padding: 10px 18px;
+      border-radius: 50px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.3s;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+    }
+    .btn-premium:hover { box-shadow:0 0 20px rgba(6,182,212,0.3); transform:translateY(-1px); }
+    .btn-support {
+      background: linear-gradient(135deg, #FF0000, #CC0000);
+      color: white;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 50px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      text-decoration: none;
+      box-shadow: 0 0 15px rgba(255,0,0,0.3);
+      transition: all 0.3s;
+      white-space: nowrap;
+    }
+    .btn-support:hover { box-shadow:0 0 20px rgba(255,0,0,0.5); transform:translateY(-1px); filter:brightness(1.1); }
+
+    /* Hero & App Window */
+    .hero { padding:40px 20px 60px; text-align:center; }
+    .hero-inner { max-width:800px; margin:0 auto; }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family:'JetBrains Mono',monospace;
+      font-size:.75rem;
+      font-weight:600;
+      color:var(--accent3);
+      background:rgba(6,182,212,0.1);
+      border:1px solid rgba(6,182,212,0.2);
+      border-radius:50px;
+      padding:8px 16px;
+      margin-bottom:24px;
+    }
+    .hero-title {
+      font-size: clamp(2rem, 6vw, 3.5rem);
+      font-weight: 700;
+      letter-spacing: -.04em;
+      line-height: 1.2;
+      margin-bottom: 20px;
+    }
+    .hero-title span {
+      background: linear-gradient(to right, var(--accent2), var(--accent), var(--accent3));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .app-window {
+      background: var(--surface);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid var(--border);
+      border-radius: var(--r24);
+      padding: 40px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.1);
+      text-align: left;
+      max-width: 640px;
+      margin: 0 auto;
+      position: relative;
+    }
+    .app-window::before {
+      content: '';
+      position: absolute;
+      inset: -2px;
+      border-radius: 26px;
+      background: linear-gradient(135deg, rgba(139,92,246,0.3), rgba(6,182,212,0.1));
+      z-index: -1;
+      filter: blur(10px);
+    }
+
+    /* Form Elements */
+    .form-group { margin-bottom: 18px; }
+    .form-group label {
+      display: block;
+      font-weight: 600;
+      font-size: 0.85rem;
+      margin-bottom: 6px;
+      color: var(--text2);
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+    }
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+      width: 100%;
+      background: rgba(0,0,0,0.3);
+      border: 1px solid var(--border);
+      border-radius: var(--r12);
+      padding: 12px 16px;
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      font-size: 0.95rem;
+      transition: border 0.3s;
+    }
+    .form-group input:focus,
+    .form-group textarea:focus,
+    .form-group select:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+
+    /* Reference Audio Upload (active) */
+    .ref-upload {
+      border: 2px dashed var(--border);
+      border-radius: var(--r12);
+      padding: 20px;
+      text-align: center;
+      background: rgba(0,0,0,0.15);
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      transition: border-color 0.3s;
+    }
+    .ref-upload:hover {
+      border-color: var(--accent3);
+    }
+    .ref-upload svg { color: var(--text3); width: 28px; height: 28px; }
+    .ref-upload strong { color: var(--text2); font-weight: 500; }
+    .ref-upload span { font-size: 0.8rem; color: var(--text3); }
+
+    /* Tag Input & Chips */
+    .tag-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 8px;
+      min-height: 36px;
+      align-items: center;
+    }
+    .tag-chip {
+      background: rgba(139,92,246,0.15);
+      border: 1px solid rgba(139,92,246,0.3);
+      border-radius: 50px;
+      padding: 4px 14px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: var(--text);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .tag-chip:hover {
+      background: rgba(217,70,239,0.2);
+    }
+    .tag-chip::after {
+      content: '×';
+      margin-left: 4px;
+      font-weight: 700;
+      opacity: 0.6;
+    }
+    .tag-input {
+      width: 100%;
+      background: rgba(0,0,0,0.3);
+      border: 1px solid var(--border);
+      border-radius: var(--r12);
+      padding: 12px 16px;
+      color: var(--text);
+      font-size: 0.95rem;
+    }
+
+    /* Style Chips (suggestions) */
+    .style-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
+    }
+    .chip {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      border-radius: 50px;
+      padding: 6px 14px;
+      color: var(--text2);
+      font-size: 0.8rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: 'Inter', sans-serif;
+    }
+    .chip:hover {
+      background: rgba(6,182,212,0.12);
+      border-color: var(--accent3);
+      color: var(--text);
+    }
+
+    /* Duration Slider */
+    .slider-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+    }
+    .slider-row label {
+      text-transform: none;
+      font-size: 0.85rem;
+      color: var(--text2);
+      font-weight: 500;
+      min-width: 100px;
+    }
+    .slider-row input[type="range"] {
+      flex: 1;
+      accent-color: var(--accent3);
+      background: transparent;
+      cursor: pointer;
+      padding: 0;
+      height: 6px;
+      border-radius: 10px;
+      background: rgba(255,255,255,0.1);
+      -webkit-appearance: none;
+      appearance: none;
+    }
+    .slider-row input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      cursor: pointer;
+      box-shadow: 0 0 15px rgba(217,70,239,0.4);
+    }
+    .slider-row input[type="range"]::-moz-range-thumb {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      border: none;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      cursor: pointer;
+      box-shadow: 0 0 15px rgba(217,70,239,0.4);
+    }
+    .duration-value {
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 600;
+      color: var(--accent3);
+      font-size: 1.1rem;
+      min-width: 60px;
+      text-align: right;
+    }
+
+    /* GENERATE BUTTON */
+    .generate-wrap {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-top: 12px;
+    }
+    .btn-generate {
+      flex: 1;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: #fff;
+      border: none;
+      padding: 16px 24px;
+      border-radius: 50px;
+      font-size: 1.1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 12px;
+      box-shadow: 0 8px 24px rgba(217,70,239,0.3);
+      font-family: 'Inter', sans-serif;
+      letter-spacing: 0.02em;
+    }
+    .btn-generate:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 32px rgba(217,70,239,0.5);
+      filter: brightness(1.1);
+    }
+    .btn-generate:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+    .free-badge-btn {
+      background: rgba(29,191,115,0.12);
+      border: 1px solid rgba(29,191,115,0.2);
+      color: #1DBF73;
+      font-weight: 700;
+      font-size: 0.7rem;
+      padding: 4px 12px;
+      border-radius: 50px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      white-space: nowrap;
+    }
+
+    /* Progress & Results */
+    .processing-state { display: none; flex-direction: column; align-items: center; gap: 16px; margin-top: 10px; padding: 20px 0; }
+    .spinner { width:40px; height:40px; border:4px solid rgba(255,255,255,0.1); border-top-color:var(--accent3); border-radius:50%; animation:spin 1s linear infinite; }
+    @keyframes spin { to { transform:rotate(360deg); } }
+    .progress-text-wrapper { display:flex; justify-content:space-between; width:100%; font-size:0.9rem; font-weight:600; color:var(--text); }
+    .progress-percent { color:var(--accent3); font-variant-numeric:tabular-nums; }
+    .progress-bar-container { width:100%; height:10px; background:rgba(0,0,0,0.4); border-radius:50px; overflow:hidden; border:1px solid var(--border); }
+    .progress-bar-fill { height:100%; width:0%; background:linear-gradient(90deg, var(--accent), var(--accent3)); border-radius:50px; transition:width 0.4s ease; }
+    .processing-subtext { font-size:0.85rem; color:var(--text2); margin-top:8px; }
+
+    .results-ui { display:none; flex-direction:column; gap:16px; margin-top:10px; }
+    .result-track { background:rgba(0,0,0,0.3); padding:20px; border-radius:var(--r12); border:1px solid var(--border); }
+    .result-track h4 { margin-bottom:16px; font-size:1rem; display:flex; align-items:center; gap:8px; }
+    .result-track audio { width:100%; height:44px; margin-bottom:16px; border-radius:8px; }
+    .btn-download { display:flex; justify-content:center; align-items:center; gap:8px; width:100%; background:rgba(255,255,255,0.05); border:1px solid var(--border); color:var(--text); padding:12px; border-radius:8px; text-decoration:none; font-size:0.9rem; font-weight:600; transition:0.2s; }
+    .btn-download:hover { background:var(--surface2); border-color:var(--accent3); }
+    .btn-reset { background:transparent; border:none; color:var(--text3); text-decoration:underline; font-size:0.9rem; cursor:pointer; padding:10px; margin-top:8px; transition:color 0.2s; }
+    .btn-reset:hover { color:var(--text); }
+
+    /* Privacy line */
+    .privacy-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 20px;
+      color: #10B981;
+      font-weight: 600;
+      font-size: 0.9rem;
+      justify-content: center;
+    }
+    .privacy-row svg { width:18px; height:18px; flex-shrink:0; }
+
+    /* Features & Coming Soon sections (unchanged) */
+    .features-section { padding:40px 20px 80px; }
+    .features-inner { max-width:1080px; margin:0 auto; }
+    .section-header { text-align:center; margin-bottom:40px; }
+    .section-title { font-size:clamp(1.8rem, 4vw, 2.2rem); font-weight:700; color:var(--text); margin-bottom:16px; }
+    .section-sub { font-size:1.05rem; color:var(--text2); max-width:600px; margin:0 auto; }
+    .features-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:24px; max-width:800px; margin:0 auto; }
+    .feat-card { background:var(--surface); backdrop-filter:blur(12px); border:1px solid var(--border); border-radius:var(--r24); padding:32px; transition:all 0.3s; }
+    .feat-card:hover { transform:translateY(-4px); box-shadow:0 20px 40px rgba(0,0,0,0.3); }
+    .feat-card.fiverr { border-color:rgba(29,191,115,0.3); background:linear-gradient(to bottom, rgba(29,191,115,0.05), var(--surface)); }
+    .feat-card.fiverr:hover { box-shadow:0 20px 40px rgba(0,0,0,0.3), 0 0 20px rgba(29,191,115,0.15); }
+    .feat-card.fiverr .feat-badge { background:rgba(29,191,115,0.1); color:var(--fiverr); border-color:rgba(29,191,115,0.2); }
+    .feat-card.zeerk { border-color:rgba(139,92,246,0.3); background:linear-gradient(to bottom, rgba(139,92,246,0.05), var(--surface)); }
+    .feat-card.zeerk:hover { box-shadow:0 20px 40px rgba(0,0,0,0.3), 0 0 20px rgba(139,92,246,0.15); }
+    .feat-card.zeerk .feat-badge { background:rgba(139,92,246,0.1); color:var(--accent); border-color:rgba(139,92,246,0.2); }
+    .feat-icon { width:48px; height:48px; margin-bottom:20px; display:flex; align-items:center; justify-content:center; font-size:1.3rem; background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.05); border-radius:12px; }
+    .feat-title { font-size:1.15rem; font-weight:700; margin-bottom:10px; color:var(--text); }
+    .feat-desc { font-size:0.9rem; color:var(--text2); line-height:1.6; }
+    .feat-badge { display:inline-block; margin-top:20px; font-size:0.75rem; font-weight:600; padding:6px 14px; border-radius:50px; }
+    .premium-link { display:inline-flex; align-items:center; margin-top:16px; font-weight:600; text-decoration:none; font-size:0.9rem; transition:all 0.2s; }
+    .fiverr .premium-link { color: var(--fiverr); }
+    .fiverr .premium-link:hover { color:#22d883; transform:translateX(4px); }
+    .zeerk .premium-link { color: var(--accent); }
+    .zeerk .premium-link:hover { color:#a78bfa; transform:translateX(4px); }
+
+    .coming-soon-section { padding:60px 20px; text-align:center; border-top:1px solid rgba(255,255,255,0.05); }
+    .coming-soon-text { font-size:clamp(1.5rem, 4vw, 2rem); font-weight:700; margin-bottom:16px; background:linear-gradient(to right, #F8FAFC, #94A3B8); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+    .coming-soon-sub { font-size:1rem; color:var(--text3); margin-bottom:32px; }
+    .btn-youtube { background:linear-gradient(135deg, #FF0000, #CC0000); max-width:280px; margin:0 auto; box-shadow:0 8px 24px rgba(255,0,0,0.2); border-radius:50px; }
+    .btn-youtube:hover { box-shadow:0 12px 32px rgba(255,0,0,0.4); }
+
+    .toast-wrap { position:fixed; top:90px; right:24px; z-index:999; display:flex; flex-direction:column; gap:12px; pointer-events:none; }
+    .toast { display:flex; align-items:center; gap:12px; padding:16px 20px; border-radius:var(--r16); font-size:0.9rem; font-weight:500; width:300px; box-shadow:0 10px 30px rgba(0,0,0,0.5); background:rgba(20,15,35,0.95); backdrop-filter:blur(10px); border:1px solid var(--border); animation:slideIn 0.3s cubic-bezier(0.16,1,0.3,1) forwards; }
+    .toast.error { border-left:4px solid #EF4444; }
+    .toast.success { border-left:4px solid var(--accent3); }
+    @keyframes slideIn { from { transform:translateX(120%); opacity:0; } to { transform:translateX(0); opacity:1; } }
+
+    @media(max-width:768px) {
+      .stats-counter { display:none; }
+      .topbar-right { gap:8px; }
+      .btn-premium, .btn-support { padding:8px 14px; font-size:0.8rem; }
+      .app-window { padding:24px 18px; }
+      .generate-wrap { flex-direction:column; align-items:stretch; }
+      .free-badge-btn { align-self:center; }
+      .hero { padding:30px 16px 40px; }
+      .toast-wrap { right:50%; transform:translateX(50%); top:80px; }
+      .toast { width:90vw; justify-content:center; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <a href="#" class="brand">
+      <div class="brand-icon">⚡</div>
+      VOICE - Z
+    </a>
+    <div class="stats-counter">
+      <span class="pulse-dot"></span>
+      <span id="liveCounter">1,240</span> Tracks Generated
+    </div>
+    <div class="topbar-right">
+      <a href="#services" class="btn-premium">Premium Services</a>
+      <a href="https://www.youtube.com/@Voice-zAI" target="_blank" class="btn-support">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/></svg>
+        Support
+      </a>
+    </div>
+  </div>
+</div>
+
+<div class="toast-wrap" id="toastWrap"></div>
+
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-badge">✦ Custom BGM Studio</div>
+    <h1 class="hero-title">Compose Music <br /><span>in seconds.</span></h1>
+
+    <div class="app-window" id="appBox">
+      <!-- UPLOAD STATE -->
+      <div id="uploadState">
+        <div class="form-group">
+          <label>🎵 Song Title (optional)</label>
+          <input type="text" id="songTitle" placeholder="My BGM Track" />
+        </div>
+
+        <!-- Reference Audio Upload (active) -->
+        <div class="form-group">
+          <label>🎛️ Reference Audio</label>
+          <div class="ref-upload" id="refUploadBox">
+            <input type="file" id="refAudioFile" accept="audio/*" style="display:none" onchange="handleRefAudio(this)" />
+            <div id="refDropZone" onclick="document.getElementById('refAudioFile').click()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 10v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7"/><line x1="12" y1="3" x2="12" y2="12"/><polyline points="8 8 12 12 16 8"/></svg>
+              <strong>Click to upload reference audio</strong>
+              <span id="refFileName" style="color: var(--text3);"></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- AI Styles Tag Input -->
+        <div class="form-group" style="margin-top:20px;">
+          <label style="font-size:1rem; text-transform:none; color:var(--text);">🤖 AI Styles</label>
+          <div class="tag-container" id="tagContainer"></div>
+          <input type="text" id="tagInput" placeholder="Type a style and press Space or Enter…" class="tag-input" />
+          <div class="style-chips" id="suggestionChips">
+            <span class="chip" onclick="addTag('#Pop')">#Pop</span>
+            <span class="chip" onclick="addTag('#Rock')">#Rock</span>
+            <span class="chip" onclick="addTag('#Electronic')">#Electronic</span>
+            <span class="chip" onclick="addTag('#Cinematic')">#Cinematic</span>
+            <span class="chip" onclick="addTag('#Happy')">#Happy</span>
+            <span class="chip" onclick="addTag('#Dark')">#Dark</span>
+            <span class="chip" onclick="addTag('#Piano')">#Piano</span>
+            <span class="chip" onclick="addTag('#Synth')">#Synth</span>
+            <span class="chip" onclick="addTag('#Ambient')">#Ambient</span>
+            <span class="chip" onclick="addTag('#Upbeat')">#Upbeat</span>
+            <span class="chip" onclick="addTag('#Orchestral')">#Orchestral</span>
+            <span class="chip" onclick="addTag('#Jazz')">#Jazz</span>
+            <span class="chip" onclick="addTag('#FastRap')">#FastRap</span>
+            <span class="chip" onclick="addTag('#LoFi')">#LoFi</span>
+            <span class="chip" onclick="addTag('#EDM')">#EDM</span>
+            <span class="chip" onclick="addTag('#Chill')">#Chill</span>
+          </div>
+        </div>
+
+        <!-- Duration Slider -->
+        <div class="form-group" style="margin-top:8px;">
+          <div class="slider-row">
+            <label>⏱️ Duration</label>
+            <input type="range" id="durationSlider" min="10" max="360" value="120" step="5" />
+            <span class="duration-value" id="durationDisplay">120s</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; font-size:0.7rem; color:var(--text3); padding:0 4px; margin-top:2px;">
+            <span>10s</span>
+            <span>360s (6 min)</span>
+          </div>
+        </div>
+
+        <div class="generate-wrap">
+          <button class="btn-generate" id="generateBtn" onclick="generateMusic()">
+            <span>🎶 GENERATE BGM</span>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </button>
+          <span class="free-badge-btn">Free</span>
+        </div>
+      </div>
+
+      <!-- PROCESSING STATES -->
+      <div class="processing-state" id="queueState" style="display:none;">
+        <div class="spinner" style="border-top-color:var(--accent2);"></div>
+        <div style="font-weight:600; color:var(--text); font-size:1.1rem;">Waiting in queue...</div>
+        <div class="processing-subtext">The GPU is currently busy.</div>
+      </div>
+      <div class="processing-state" id="processingState">
+        <div class="progress-text-wrapper">
+          <span>Generating Music...</span>
+          <span class="progress-percent" id="progressPercent">0%</span>
+        </div>
+        <div class="progress-bar-container">
+          <div class="progress-bar-fill" id="progressBar"></div>
+        </div>
+        <div class="processing-subtext">⚡VOICE-Z is composing your track</div>
+      </div>
+
+      <!-- RESULTS -->
+      <div class="results-ui" id="resultsState">
+        <div class="app-header" style="font-size:1.2rem; font-weight:700; text-align:center; margin-bottom:12px;">✨ Generation Complete!</div>
+        <div class="result-track">
+          <h4>🎼 Your Track</h4>
+          <audio id="playerAudio" controls></audio>
+          <a id="downloadLink" href="#" class="btn-download" download>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+            Save Track
+          </a>
+        </div>
+        <button class="btn-reset" onclick="resetApp()">Generate Another Track</button>
+      </div>
+    </div> <!-- /app-window -->
+
+    <!-- Privacy line -->
+    <div class="privacy-row">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+      No files are stored on our server
+    </div>
+  </div>
+</section>
+
+<!-- PREMIUM SERVICES & COMING SOON (unchanged) -->
+<section class="features-section" id="services">
+  <div class="features-inner">
+    <div class="section-header">
+      <h2 class="section-title">Need Professional Production?</h2>
+      <p class="section-sub">Hire our experts for radio‑ready tracks, custom AI models, and professional mixing.</p>
+    </div>
+    <div class="features-grid">
+      <div class="feat-card fiverr">
+        <div class="feat-icon">🎵</div>
+        <div class="feat-title">Hire us on Fiverr</div>
+        <div class="feat-desc">Get professional AI audio services, custom song creation, mixing, and mastering from our top‑rated experts.</div>
+        <div class="feat-badge">Pro Services</div><br />
+        <a href="https://www.fiverr.com/" target="_blank" class="premium-link">View Fiverr Gigs →</a>
+      </div>
+      <div class="feat-card zeerk">
+        <div class="feat-icon">🎹</div>
+        <div class="feat-title">Hire us on Zeerk</div>
+        <div class="feat-desc">Unlock premium AI audio services. We compose, arrange, and deliver complete, high‑fidelity tracks.</div>
+        <div class="feat-badge">Enterprise Ready</div><br />
+        <a href="https://zeerk.com/job/audio-music/premium-ai-audio-services-of-all-types/#slide1" target="_blank" class="premium-link">View Zeerk Services →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="coming-soon-section">
+  <div class="coming-soon-text">Free Custom RVC Creator & Voice Cloner <br />Coming Soon 🚀</div>
+  <div class="coming-soon-sub">We are building the ultimate web‑based voice training portal. Stay tuned!</div>
+  <a href="https://www.youtube.com/@Voice-zAI" target="_blank" class="btn-generate btn-youtube">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" style="margin-right:4px;"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/></svg>
+    Support Us by Subscribing!
+  </a>
+</section>
+
+<script>
+  // ─── CONFIGURATION ──────────────────────────────────────────
+  const API_BASE = 'http://localhost:3000';
+
+  let progressInterval;
+  let currentProgress = 0;
+  let isProgressActive = false;
+  let totalTracks = 1240;
+
+  // ─── DURATION SLIDER ────────────────────────────────────────
+  const slider = document.getElementById('durationSlider');
+  const durationDisplay = document.getElementById('durationDisplay');
+  slider.addEventListener('input', () => {
+    durationDisplay.textContent = slider.value + 's';
+  });
+
+  // ─── REFERENCE AUDIO ────────────────────────────────────────
+  let referenceFile = null;
+
+  function handleRefAudio(input) {
+    if (input.files.length > 0) {
+      referenceFile = input.files[0];
+      document.getElementById('refFileName').textContent = referenceFile.name;
+    }
+  }
+
+  // ─── TAG INPUT LOGIC ──────────────────────────────────────
+  const tagContainer = document.getElementById('tagContainer');
+  const tagInput = document.getElementById('tagInput');
+  let tags = [];
+
+  // Render tags as removable chips
+  function renderTags() {
+    tagContainer.innerHTML = '';
+    tags.forEach((tag, index) => {
+      const chip = document.createElement('span');
+      chip.className = 'tag-chip';
+      chip.textContent = tag;
+      chip.addEventListener('click', () => {
+        tags.splice(index, 1);
+        renderTags();
+      });
+      tagContainer.appendChild(chip);
+    });
+  }
+
+  // Add a tag if not already present (accepts with or without #)
+  function addTag(tagText) {
+    tagText = tagText.trim();
+    if (!tagText) return;
+    // Ensure tag starts with #
+    if (!tagText.startsWith('#')) tagText = '#' + tagText;
+    if (!tags.includes(tagText)) {
+      tags.push(tagText);
+      renderTags();
+    }
+    tagInput.value = '';
+    tagInput.focus();
+  }
+
+  // Handle keyboard events in tag input
+  tagInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      const value = tagInput.value.trim();
+      if (value) {
+        // Remove spaces inside the typed tag (e.g., "fast rap" → "fastrap")
+        const cleaned = value.replace(/\s+/g, '');
+        if (cleaned) {
+          addTag('#' + cleaned);
+        }
+      }
+      tagInput.value = '';
+    }
+  });
+
+  // Suggestion chips are in HTML and call addTag directly
+
+  // ─── TOAST ──────────────────────────────────────────────────
+  function showToast(type, msg) {
+    const wrap = document.getElementById('toastWrap');
+    const toast = document.createElement('div');
+    toast.className = `toast ${type}`;
+    const iconColor = type === 'error' ? '#EF4444' : '#06B6D4';
+    const icon = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="${iconColor}" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>`;
+    toast.innerHTML = `${icon} <div>${msg}</div>`;
+    wrap.appendChild(toast);
+    setTimeout(() => {
+      toast.style.opacity = '0';
+      toast.style.transform = 'translateY(-10px)';
+      toast.style.transition = 'all 0.3s ease';
+      setTimeout(() => toast.remove(), 300);
+    }, 4000);
+  }
+
+  // ─── RESET UI ─────────────────────────────────────────────────
+  function resetApp() {
+    document.getElementById('resultsState').style.display = 'none';
+    document.getElementById('queueState').style.display = 'none';
+    document.getElementById('processingState').style.display = 'none';
+    document.getElementById('uploadState').style.display = 'block';
+    document.getElementById('generateBtn').disabled = false;
+    isProgressActive = false;
+    clearInterval(progressInterval);
+    const player = document.getElementById('playerAudio');
+    player.pause();
+    player.src = '';
+    document.getElementById('downloadLink').href = '#';
+    tags = [];
+    renderTags();
+    referenceFile = null;
+    document.getElementById('refFileName').textContent = '';
+    document.getElementById('refAudioFile').value = '';
+  }
+
+  // ─── PROGRESS BAR ─────────────────────────────────────────────
+  function startProgress() {
+    currentProgress = 0;
+    updateProgressUI(0);
+    isProgressActive = true;
+    progressInterval = setInterval(() => {
+      if (currentProgress < 95) {
+        currentProgress += Math.random() * 2 + 0.5;
+        if (currentProgress > 95) currentProgress = 95;
+        updateProgressUI(currentProgress);
+      }
+    }, 800);
+  }
+
+  function completeProgress() {
+    clearInterval(progressInterval);
+    updateProgressUI(100);
+  }
+
+  function updateProgressUI(val) {
+    document.getElementById('progressBar').style.width = val + '%';
+    document.getElementById('progressPercent').textContent = Math.floor(val) + '%';
+  }
+
+  // ─── GENERATE MUSIC ──────────────────────────────────────────
+  async function generateMusic() {
+    // Scroll to top
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    const title = document.getElementById('songTitle').value.trim() || 'Untitled';
+    const duration = parseInt(document.getElementById('durationSlider').value, 10);
+
+    if (tags.length === 0) {
+      showToast('error', 'Please add at least one style tag.');
+      return;
+    }
+
+    const styleString = tags.join(' ');
+    const prompt = `Title: ${title}. Styles: ${styleString}. Instrumental background music.`;
+
+    // Switch UI
+    document.getElementById('uploadState').style.display = 'none';
+    document.getElementById('queueState').style.display = 'flex';
+    document.getElementById('generateBtn').disabled = true;
+
+    try {
+      const formData = new FormData();
+      formData.append('prompt', prompt);
+      formData.append('duration', duration);
+      if (referenceFile) {
+        formData.append('referenceAudio', referenceFile);
+      }
+
+      const response = await fetch(`${API_BASE}/api/generate`, {
+        method: 'POST',
+        body: formData
+      });
+
+      if (!response.ok) {
+        const errData = await response.json().catch(() => ({}));
+        throw new Error(errData.error || `Server responded with ${response.status}`);
+      }
+
+      const data = await response.json();
+      if (!data.jobId) {
+        throw new Error('No job ID returned');
+      }
+      pollStatus(data.jobId);
+    } catch (err) {
+      console.error('Generation error:', err);
+      clearInterval(progressInterval);
+      showToast('error', 'Error: ' + err.message);
+      resetApp();
+    }
+  }
+
+  // ─── POLL STATUS ─────────────────────────────────────────────
+  function pollStatus(jobId) {
+    const interval = setInterval(async () => {
+      try {
+        const res = await fetch(`${API_BASE}/api/status/${jobId}`);
+        if (!res.ok) {
+          clearInterval(interval);
+          showToast('error', 'Job not found');
+          resetApp();
+          return;
+        }
+        const data = await res.json();
+
+        if (data.status === 'queued') {
+          // stay in queue
+        } else if (data.status === 'processing') {
+          if (!isProgressActive) {
+            document.getElementById('queueState').style.display = 'none';
+            document.getElementById('processingState').style.display = 'flex';
+            startProgress();
+          }
+        } else if (data.status === 'completed') {
+          clearInterval(interval);
+          completeProgress();
+          totalTracks++;
+          document.getElementById('liveCounter').innerText = totalTracks.toLocaleString();
+          
+          const audioSrc = data.audioUrl || data.file_path;
+          setTimeout(() => renderResults(audioSrc, jobId), 500);
+        } else if (data.status === 'failed') {
+          clearInterval(interval);
+          showToast('error', 'Generation failed: ' + (data.error || 'unknown error'));
+          resetApp();
+        } else {
+          clearInterval(interval);
+          showToast('error', 'Unexpected status: ' + data.status);
+          resetApp();
+        }
+      } catch (err) {
+        console.warn('Polling error:', err);
+      }
+    }, 3000);
+  }
+
+  // ─── RENDER RESULTS ─────────────────────────────────────────
+  function renderResults(audioSrc, jobId) {
+    document.getElementById('processingState').style.display = 'none';
+    document.getElementById('queueState').style.display = 'none';
+    document.getElementById('resultsState').style.display = 'flex';
+
+    let audioUrl;
+
+    if (audioSrc && (audioSrc.startsWith('http') || audioSrc.startsWith('/'))) {
+      audioUrl = audioSrc;
+    } else if (audioSrc && (audioSrc.includes(':') || audioSrc.startsWith('/'))) {
+      audioUrl = `${API_BASE}/api/file?path=${encodeURIComponent(audioSrc)}`;
+    } else {
+      audioUrl = `${API_BASE}/v1/audio?task_id=${jobId}`;
+    }
+
+    if (audioUrl.startsWith('/') && !audioUrl.startsWith('http')) {
+      audioUrl = API_BASE + audioUrl;
+    }
+
+    const player = document.getElementById('playerAudio');
+    const download = document.getElementById('downloadLink');
+    
+    player.src = audioUrl;
+    download.href = audioUrl;
+
+    const ext = audioUrl.split('.').pop().split('?')[0] || 'mp3';
+    const filename = `VOICE-Z_Track_${jobId ? jobId.substring(0,6) : 'latest'}.${ext}`;
+    download.download = filename;
+
+    showToast('success', '🎉 Your track is ready!');
+    document.getElementById('generateBtn').disabled = false;
+  }
+
+  // ─── LIVE COUNTER ──────────────────────────────────────────────
+  async function initStats() {
+    try {
+      const res = await fetch(`${API_BASE}/api/stats`);
+      if (res.ok) {
+        const data = await res.json();
+        if (data.totalTracks) {
+          totalTracks = data.totalTracks;
+          document.getElementById('liveCounter').innerText = totalTracks.toLocaleString();
+        }
+      }
+    } catch(e) {
+      console.log('Stats endpoint not available – using local counter');
+    }
+    setInterval(() => {
+      totalTracks += Math.floor(Math.random() * 14) + 2;
+      document.getElementById('liveCounter').innerText = totalTracks.toLocaleString();
+    }, 90000);
+  }
+  initStats();
+</script>
+</body>
+</html>
