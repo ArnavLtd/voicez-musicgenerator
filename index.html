@@ -1084,6 +1084,7 @@ async function generate() {
   const duration = parseInt(document.getElementById('durSlider').value, 10);
   document.getElementById('btnGen').disabled = true;
   showState('stateQueue');
+  console.log('🚀 Generate called, API_BASE =', API_BASE);
 
   try {
     const fd = new FormData();
@@ -1094,25 +1095,27 @@ async function generate() {
     const ctrl = new AbortController();
     const tid = setTimeout(() => ctrl.abort(), 60000);
 
+    console.log('📤 Sending /api/generate request...');
     const res = await fetch(`${API_BASE}/api/generate`, { 
       method: 'POST', 
       body: fd, 
-      signal: ctrl.signal,
-      headers: {
-        "Bypass-Tunnel-Reminder": "true"
-      }
+      signal: ctrl.signal
     });
     clearTimeout(tid);
 
+    console.log('📥 Response status:', res.status);
     if (!res.ok) {
       const e = await res.json().catch(() => ({}));
       throw new Error(e.error || `Server error (${res.status})`);
     }
     const data = await res.json();
+    console.log('📦 Generate response:', data);
     if (!data.jobId) throw new Error('No job ID returned from server.');
+    console.log('✅ Job started with ID:', data.jobId);
     poll(data.jobId);
   } catch (err) {
     clearInterval(progTimer);
+    console.error('❌ Generate error:', err);
     if (err.name === 'AbortError') toast('error', 'Request timed out. Please try again.');
     else if (!navigator.onLine) toast('error', 'No internet connection.');
     else toast('error', err.message);
@@ -1122,32 +1125,59 @@ async function generate() {
 
 /* ─── POLL ────────────────────────────────────────────── */
 function poll(jobId) {
-  let retries = 0;
-  const iv = setInterval(async () => {
+  let attempts = 0;
+  const maxAttempts = 60; // 3 minutes
+  console.log(`⏳ Starting poll for job ${jobId}, max attempts ${maxAttempts}`);
+
+  const interval = setInterval(async () => {
+    attempts++;
     try {
-      const res = await fetch(`${API_BASE}/api/status/${jobId}`, {
-        headers: {
-          "Bypass-Tunnel-Reminder": "true"
+      const url = `${API_BASE}/api/status/${jobId}`;
+      console.log(`🔍 Poll #${attempts}: fetching ${url}`);
+      const res = await fetch(url);
+      console.log(`📡 Status response: ${res.status} ${res.statusText}`);
+
+      if (!res.ok) {
+        console.warn(`⚠️ Status returned ${res.status}`);
+        if (attempts >= maxAttempts) {
+          clearInterval(interval);
+          toast('error', 'Timed out waiting for track.');
+          resetApp();
         }
-      });
-      retries = 0;
-      if (!res.ok) { clearInterval(iv); toast('error', 'Could not check status.'); resetApp(); return; }
+        return;
+      }
+
       const d = await res.json();
+      console.log('📦 Status payload:', d);
 
       if (d.status === 'queued') {
-        /* stay */
+        // still waiting
       } else if (d.status === 'processing') {
-        if (!progActive) { showState('stateProc'); startProg(); }
+        if (!progActive) {
+          showState('stateProc');
+          startProg();
+        }
       } else if (d.status === 'completed') {
-        clearInterval(iv); finishProg();
+        clearInterval(interval);
+        finishProg();
+        console.log('🎉 Job completed, audioUrl/file_path:', d.audioUrl || d.file_path);
         setTimeout(() => showResult(d.audioUrl || d.file_path, jobId), 500);
       } else if (d.status === 'failed') {
-        clearInterval(iv); toast('error', 'Generation failed: ' + (d.error || 'Unknown error.')); resetApp();
+        clearInterval(interval);
+        toast('error', 'Generation failed: ' + (d.error || 'Unknown error.'));
+        resetApp();
       } else {
-        clearInterval(iv); toast('error', 'Unexpected status: ' + d.status); resetApp();
+        clearInterval(interval);
+        toast('error', 'Unexpected status: ' + d.status);
+        resetApp();
       }
-    } catch (e) {
-      if (++retries >= 3) { clearInterval(iv); toast('error', 'Lost connection. Refresh and try again.'); resetApp(); }
+    } catch (err) {
+      console.error('❌ Polling fetch error:', err);
+      if (attempts >= maxAttempts) {
+        clearInterval(interval);
+        toast('error', 'Lost connection to server. Refresh and try again.');
+        resetApp();
+      }
     }
   }, 3000);
 }
@@ -1155,6 +1185,7 @@ function poll(jobId) {
 /* ─── SHOW RESULT ─────────────────────────────────────── */
 function showResult(src, jobId) {
   let url;
+  console.log('🎵 Result source:', src);
   
   if (src && src.startsWith('/')) {
       url = API_BASE + src;
@@ -1165,6 +1196,8 @@ function showResult(src, jobId) {
   else {
       url = `${API_BASE}/v1/audio?task_id=${jobId}`;
   }
+
+  console.log('🎵 Final audio URL:', url);
 
   const player = document.getElementById('player');
   const dl = document.getElementById('dlLink');
@@ -1180,11 +1213,26 @@ function showResult(src, jobId) {
   document.getElementById('btnGen').disabled = false;
 }
 
+/* ─── MANUAL STATUS CHECK (for debugging) ────────────── */
+window.checkStatus = async function(jobId) {
+  if (!jobId) { console.warn('Please provide a jobId, e.g. checkStatus("abc123")'); return; }
+  try {
+    const url = `${API_BASE}/api/status/${jobId}`;
+    console.log(`🔍 Manual check: ${url}`);
+    const res = await fetch(url);
+    console.log('📡 Status:', res.status);
+    const data = await res.json();
+    console.log('📦 Data:', data);
+    return data;
+  } catch (e) {
+    console.error('❌ Manual check failed:', e);
+  }
+};
+
 /* ─── INIT ────────────────────────────────────────────── */
 showState('stateForm');
 onSlider(document.getElementById('durSlider'));
 
-// Clear reference audio when the × button is clicked
 document.getElementById('refClearBtn').addEventListener('click', function(e) {
   e.stopPropagation();
   clearRefAudio();
@@ -1195,6 +1243,9 @@ document.getElementById('refClearBtn').addEventListener('keydown', function(e) {
     clearRefAudio();
   }
 });
+
+console.log('✅ VOICE-Z frontend loaded, API_BASE =', API_BASE);
+console.log('ℹ️  To manually check a job status, type checkStatus("your-job-id") in the console.');
 </script>
 </body>
 </html>
