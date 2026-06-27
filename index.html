@@ -42,8 +42,6 @@ body{
   -webkit-font-smoothing: antialiased;
   line-height: 1.6;
 }
-
-/* subtle brushed-metal noise texture */
 body::before{
   content:'';
   position: fixed; inset: 0; z-index: -1; pointer-events: none;
@@ -51,13 +49,10 @@ body::before{
     repeating-linear-gradient(0deg, rgba(255,255,255,0.012) 0px, rgba(255,255,255,0.012) 1px, transparent 1px, transparent 3px);
   opacity: 0.6;
 }
-
 .mono{ font-family:'Space Mono', monospace; }
 .display{ font-family:'Oswald', sans-serif; text-transform: uppercase; }
 
-/* ════════════════════════════════════════════════════════
-   TOPBAR — console nameplate
-   ════════════════════════════════════════════════════════ */
+/* ─── TOPBAR ───────────────────────────────────────────── */
 .topbar{
   position: sticky; top: 0; z-index: 200;
   height: var(--topbar-h);
@@ -97,9 +92,7 @@ body::before{
   font-size: 0.65rem; letter-spacing: 0.04em; color: var(--ink-faint); font-weight: 400;
   margin-top: 2px;
 }
-
 .topbar-right{ display:flex; align-items:center; gap:12px; flex-shrink:0; }
-
 .btn-chip{
   display:inline-flex; align-items:center; gap:8px;
   padding: 10px 18px; border-radius: var(--r-md);
@@ -120,9 +113,7 @@ body::before{
 .btn-chip-lamp:hover{ background: rgba(255,68,51,0.08); border-color: var(--red-lamp); }
 .btn-chip-lamp svg{ filter: drop-shadow(0 0 3px rgba(255,68,51,0.6)); }
 
-/* ════════════════════════════════════════════════════════
-   TOAST
-   ════════════════════════════════════════════════════════ */
+/* ─── TOAST ────────────────────────────────────────────── */
 .toast-area{
   position: fixed; z-index: 500;
   top: calc(var(--topbar-h) + 20px); right: 24px;
@@ -143,15 +134,12 @@ body::before{
 .toast.t-success{ border-left-color: var(--tape-green); }
 @keyframes toastIn{from{transform:translateX(110%);opacity:0;}to{transform:translateX(0);opacity:1;}}
 
-/* ════════════════════════════════════════════════════════
-   HERO
-   ════════════════════════════════════════════════════════ */
+/* ─── HERO ─────────────────────────────────────────────── */
 .hero{
   padding: 80px 32px 70px;
   text-align: center;
 }
 .hero-inner{ max-width: 800px; margin: 0 auto; }
-
 .eyebrow{
   display:inline-flex; align-items:center; gap:10px;
   font-family:'Space Mono', monospace;
@@ -164,7 +152,6 @@ body::before{
   margin-bottom: 28px;
 }
 .eyebrow .lamp{ width:6px; height:6px; border-radius:50%; background:var(--amber); box-shadow:0 0 8px var(--amber); }
-
 .hero-title{
   font-family:'Oswald', sans-serif; text-transform: uppercase;
   font-size: clamp(3rem, 5vw, 4.2rem);
@@ -180,15 +167,13 @@ body::before{
   line-height: 1.6;
 }
 
-/* ════════════════════════════════════════════════════════
-   CONSOLE — vertical stacked layout
-   ════════════════════════════════════════════════════════ */
+/* ─── CONSOLE ──────────────────────────────────────────── */
 .console{
   background: linear-gradient(180deg, var(--panel-2), var(--panel-1) 90%);
   border: 1px solid var(--hairline-strong);
   border-radius: var(--r-lg);
   padding: 0;
-  max-width: 800px; /* Narrowed from 1200px for a clean single-column look */
+  max-width: 800px;
   margin: 0 auto;
   text-align: left;
   box-shadow:
@@ -212,7 +197,6 @@ body::before{
 }
 .console-body{ padding: 48px 48px 40px; } 
 
-/* Single column layout */
 #stateForm{
   display: flex;
   flex-direction: column;
@@ -237,7 +221,6 @@ body::before{
 
 /* ─── FIELDS ──────────────────────────────────────────── */
 .field{ margin-bottom: 0; }
-
 .field-label{
   display:flex; align-items:center; gap:10px;
   font-family:'Space Mono', monospace;
@@ -253,7 +236,6 @@ body::before{
   font-weight: 400;
   margin-left: 4px;
 }
-
 .input, .textarea, .select{
   width: 100%;
   background: var(--groove);
@@ -280,7 +262,6 @@ body::before{
   cursor:pointer;
 }
 .select option{ background: #1a160d; color: var(--ink); }
-
 .char-row{
   display:flex; justify-content:flex-end;
   font-family:'Space Mono', monospace; font-size: 0.72rem; color: var(--ink-faint);
@@ -346,21 +327,8 @@ body::before{
 .panel-card-body strong{ color: var(--ink-dim); font-size: 0.95rem; font-weight: 500; font-family:'Archivo',sans-serif; }
 .panel-card-body small{ color: var(--ink-faint); font-size: 0.75rem; font-family:'Space Mono',monospace; }
 #refFileName{ color: var(--amber); font-size: 0.85rem; font-weight: 500; font-family:'Space Mono',monospace; }
-.ref-clear-btn{
-  background: transparent;
-  border: none;
-  color: var(--ink-faint);
-  cursor: pointer;
-  font-family: 'Space Mono', monospace;
-  font-size: 0.7rem;
-  padding: 4px 8px;
-  border-radius: 4px;
-  transition: color 0.15s, background 0.15s;
-  margin-top: 4px;
-}
-.ref-clear-btn:hover{ color: var(--red-lamp); background: rgba(255,68,51,0.08); }
 
-/* ─── ENHANCER CHIPS — toggle switches ───────────────── */
+/* ─── ENHANCER CHIPS ───────────────────────────────────── */
 .chips{ display:flex; flex-wrap:wrap; gap:12px; margin-top: 8px; }
 .chip{
   display:flex; align-items:center; gap:8px;
@@ -386,7 +354,7 @@ body::before{
 }
 .chip:has(input:checked) label{ color: var(--amber); }
 
-/* ─── DURATION — tape-reel readout ───────────────────── */
+/* ─── DURATION ────────────────────────────────────────── */
 .tape-wrap{
   background: var(--groove);
   border: 1px solid var(--hairline-strong);
@@ -433,7 +401,7 @@ input[type="range"]::-moz-range-thumb{
   margin-top: 12px; padding: 0 4px;
 }
 
-/* ─── TRANSPORT BUTTON ───────────────────────────────── */
+/* ─── TRANSPORT ───────────────────────────────────────── */
 .gen-row{ display:flex; align-items:center; gap:16px; margin-top: 8px; }
 .btn-gen{
   flex:1;
@@ -461,12 +429,9 @@ input[type="range"]::-moz-range-thumb{
   padding: 6px 14px; white-space:nowrap; flex-shrink:0;
 }
 
-/* ════════════════════════════════════════════════════════
-   STATES — queue / processing / result
-   ════════════════════════════════════════════════════════ */
+/* ─── STATES ──────────────────────────────────────────── */
 .state{ display:none; flex-direction:column; align-items:center; gap:24px; padding: 40px 0 20px; }
 .state.active{ display:flex; }
-
 .reel{
   width: 64px; height: 64px; position: relative;
   border: 4px solid var(--hairline-strong);
@@ -485,7 +450,6 @@ input[type="range"]::-moz-range-thumb{
   border-radius:50%; background: var(--ink-faint);
 }
 @keyframes reelspin{ to{ transform: rotate(360deg); } }
-
 .state-title{ font-family:'Oswald', sans-serif; text-transform:uppercase; font-weight:600; font-size: 1.2rem; letter-spacing:0.02em; }
 .state-sub{ font-family:'Space Mono', monospace; font-size: 0.85rem; color: var(--ink-dim); margin-top: -8px; }
 
@@ -533,9 +497,7 @@ input[type="range"]::-moz-range-thumb{
 }
 .btn-reset:hover{ color: var(--amber); }
 
-/* ════════════════════════════════════════════════════════
-   SERVICES SECTION
-   ════════════════════════════════════════════════════════ */
+/* ─── SERVICES ────────────────────────────────────────── */
 .section{ padding: 90px 32px; }
 .section-inner{ max-width: 1400px; margin: 0 auto; }
 .section-head{ text-align:center; margin-bottom: 56px; }
@@ -544,13 +506,11 @@ input[type="range"]::-moz-range-thumb{
   font-size: 2.2rem; font-weight: 700; letter-spacing: 0; margin-bottom: 12px;
 }
 .section-sub{ font-size: 1.05rem; color: var(--ink-dim); max-width: 540px; margin: 0 auto; line-height: 1.6; }
-
 .grid-2{
   display:grid;
   grid-template-columns: 1fr 1fr;
   gap: 32px; max-width: 900px; margin: 0 auto;
 }
-
 .feat-card{
   border-radius: var(--r-lg);
   padding: clamp(28px, 4vw, 36px);
@@ -559,7 +519,6 @@ input[type="range"]::-moz-range-thumb{
   transition: border-color 0.2s, transform 0.2s;
 }
 .feat-card:hover{ transform: translateY(-4px); border-color: var(--amber-dim); }
-
 .feat-icon{
   width: 48px; height: 48px; border-radius: var(--r-sm);
   background: var(--groove); border: 1px solid var(--hairline-strong);
@@ -581,9 +540,7 @@ input[type="range"]::-moz-range-thumb{
 }
 .feat-link:hover{ color: var(--amber); transform: translateX(4px); }
 
-/* ════════════════════════════════════════════════════════
-   COMING SOON
-   ════════════════════════════════════════════════════════ */
+/* ─── COMING SOON ─────────────────────────────────────── */
 .coming{
   padding: clamp(56px, 7vw, 90px) 24px;
   text-align: center;
@@ -610,72 +567,49 @@ input[type="range"]::-moz-range-thumb{
 .btn-yt:active{ transform: translateY(4px); box-shadow: 0 2px 0 #b8281c, 0 4px 12px rgba(255,68,51,0.25); }
 
 .divider{ height:1px; background: var(--hairline); margin: 0 24px; }
-
 :focus-visible{ outline: 2px solid var(--amber); outline-offset: 2px; }
 
-/* ════════════════════════════════════════════════════════
-   TABLET & MOBILE
-   ════════════════════════════════════════════════════════ */
+/* ─── RESPONSIVE ──────────────────────────────────────── */
 @media (max-width: 992px){
   :root{ --topbar-h: 64px; }
-
   .topbar-inner{ padding: 0 20px; }
   .brand-mark{ width:32px; height:32px; }
   .brand-text{ font-size: 1.1rem; }
   .btn-chip{ padding: 8px 14px; font-size: 0.8rem; }
-
   .toast-area{ right:50%; transform: translateX(50%); top: calc(var(--topbar-h) + 16px); left:auto; }
-
   .hero{ padding: 56px 20px 48px; }
   .hero-inner{ max-width: 100%; }
   .hero-title{ font-size: 2.5rem; margin-bottom: 16px; }
   .hero-sub{ font-size: 1rem; max-width: 100%; margin-bottom: 40px; }
-
   .console{ max-width: 100%; border-radius: 16px; margin: 0 16px; width: auto; }
   .console-strip{ padding: 18px 24px; }
   .console-body{ padding: 32px 24px 32px; }
-
   #stateForm{ gap: 32px; }
   .rack-col-left, .rack-col-right{ gap: 32px; }
   .rack-col-right { padding-top: 32px; }
   .row-2 { gap: 32px; }
-
-  /* big, comfortable tap targets */
   .input, .textarea, .select{ padding: 16px 20px; font-size: 1.05rem; }
   .textarea{ min-height: 160px; }
   .field-label{ font-size: 0.8rem; margin-bottom: 14px; }
-
   .panel-card-head{ padding: 20px 20px 16px; }
   .panel-card-body{ padding: 32px 20px; }
-
   .chips{ gap: 12px; }
   .chip{ padding: 12px 18px; }
   .chip label{ font-size: 0.9rem; }
-
   .tape-wrap{ padding: 24px 20px; }
   .tape-val{ font-size: 1.5rem; }
-
   .gen-row{ flex-direction: column; margin-top: 8px; }
   .btn-gen{ padding: 20px 24px; font-size: 1.1rem; min-height: 64px; width: 100%; }
-
   .section{ padding: 64px 24px; }
   .section-head{ margin-bottom: 40px; }
   .section-title{ font-size: 1.8rem; }
-  .grid-2{
-    display: flex;
-    flex-direction: column;
-    gap: 24px;
-    max-width: 100%;
-  }
+  .grid-2{ display: flex; flex-direction: column; gap: 24px; max-width: 100%; }
   .feat-card{ padding: 28px; }
-
   .coming{ padding: 56px 24px; }
   .coming-title{ font-size: 1.5rem; }
   .btn-yt{ width: 100%; justify-content: center; }
-
   .divider{ margin: 0 24px; }
 }
-
 @media (prefers-reduced-motion: reduce){
   *,*::before,*::after{ animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
 }
@@ -689,11 +623,10 @@ input[type="range"]::-moz-range-thumb{
       <div class="brand-mark" aria-hidden="true"></div>
       <div class="brand-text">VOICE-Z<small>BGM STUDIO</small></div>
     </a>
-    
     <nav class="topbar-right">
       <a href="#services" class="btn-chip btn-chip-ghost">Premium</a>
       <a href="https://www.youtube.com/@Voice-zAI" target="_blank" rel="noopener noreferrer" class="btn-chip btn-chip-lamp" aria-label="Subscribe on YouTube">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/></svg>
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/></svg>
         Support
       </a>
     </nav>
@@ -705,28 +638,25 @@ input[type="range"]::-moz-range-thumb{
 <main>
   <section class="hero">
     <div class="hero-inner">
-      <div class="eyebrow"><span class="lamp" aria-hidden="true"></span>AI BGM Studio</div>
+      <div class="eyebrow"><span class="lamp"></span>AI BGM Studio</div>
       <h1 class="hero-title">Create music<br><span class="accent">in seconds.</span></h1>
       <p class="hero-sub">Describe any sound and get a full instrumental back — free, instant, no login required.</p>
 
       <div class="console" id="appCard">
         <div class="console-strip">
           <span class="label mono">CH.01 — COMPOSER</span>
-          <div class="lamps" aria-hidden="true"><span></span><span></span><span></span></div>
+          <div class="lamps"><span></span><span></span><span></span></div>
         </div>
 
         <div class="console-body">
 
           <div id="stateForm">
-
             <div class="rack-col-left">
-
               <div class="row-2">
                 <div class="field">
                   <label class="field-label" for="songTitle"><span class="tag">①</span> Track Title <span class="opt">optional</span></label>
                   <input class="input" type="text" id="songTitle" placeholder="Untitled BGM" maxlength="100" autocomplete="off" spellcheck="false" />
                 </div>
-
                 <div class="field">
                   <label class="field-label" for="presetSelect"><span class="tag">②</span> Style Preset <span class="opt">auto-fills</span></label>
                   <select class="select" id="presetSelect" aria-label="Choose a style preset">
@@ -779,18 +709,17 @@ input[type="range"]::-moz-range-thumb{
                     <div class="panel-card-title">
                       <span class="tag">④</span> Reference Audio
                       <span class="opt-label">(optional)</span>
-                      <span class="info-dot" aria-hidden="true">i</span>
+                      <span class="info-dot">i</span>
                     </div>
-                    <div class="panel-card-action" id="refClearBtn" aria-label="Clear reference audio" role="button" tabindex="0">
+                    <div class="panel-card-action" id="refClearBtn" role="button" tabindex="0">
                       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="6" cy="6" r="1.4" fill="currentColor" stroke="none"/><circle cx="18" cy="6" r="1.4" fill="currentColor" stroke="none"/><circle cx="6" cy="18" r="1.4" fill="currentColor" stroke="none"/><circle cx="18" cy="18" r="1.4" fill="currentColor" stroke="none"/><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg>
                     </div>
                   </div>
                   <div class="panel-card-body" id="dropZone" role="button" tabindex="0"
-                    aria-label="Click to upload reference audio"
                     onclick="document.getElementById('refFile').click()"
                     onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();document.getElementById('refFile').click();}">
                     <input type="file" id="refFile" accept="audio/*" style="display:none" onchange="handleRefAudio(this)" />
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
                       <path d="M19 10v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7"/>
                       <line x1="12" y1="3" x2="12" y2="14"/>
                       <polyline points="8 8 12 3 16 8"/>
@@ -801,9 +730,9 @@ input[type="range"]::-moz-range-thumb{
                   </div>
                 </div>
               </div>
+            </div>
 
-            </div><div class="rack-col-right">
-
+            <div class="rack-col-right">
               <div class="field">
                 <div class="field-label"><span class="tag">⑤</span> Prompt Enhancers</div>
                 <div class="chips" role="group" aria-label="Audio enhancers">
@@ -822,53 +751,53 @@ input[type="range"]::-moz-range-thumb{
                 <div class="tape-wrap">
                   <div class="tape-header">
                     <span class="tape-label">⑥ Duration</span>
-                    <span class="tape-val" id="durDisplay" aria-live="polite">02:00</span>
+                    <span class="tape-val" id="durDisplay">02:00</span>
                   </div>
-                  <input type="range" id="durSlider" min="10" max="360" value="120" step="5"
-                    aria-label="Track duration" oninput="onSlider(this)" />
+                  <input type="range" id="durSlider" min="10" max="360" value="120" step="5" aria-label="Track duration" oninput="onSlider(this)" />
                   <div class="tape-hints"><span>0:10</span><span>6:00</span></div>
                 </div>
               </div>
 
               <div class="gen-row">
                 <button class="btn-gen" id="btnGen" onclick="generate()">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
                   Generate BGM
                 </button>
               </div>
               <div style="text-align:center; margin-top:12px;">
-                <span class="free-tag" aria-label="Free to use">Free</span>
+                <span class="free-tag">Free</span>
               </div>
+            </div>
+          </div> <!-- stateForm -->
 
-            </div></div><div class="state" id="stateQueue" role="status" aria-label="Waiting in queue">
-            <div class="reel" aria-hidden="true"></div>
+          <div class="state" id="stateQueue" role="status">
+            <div class="reel"></div>
             <div class="state-title">Waiting in queue…</div>
             <div class="state-sub">GPU is busy — your track is next up.</div>
           </div>
 
-          <div class="state" id="stateProc" role="status" aria-label="Generating track">
-            <div class="prog-row">
-              <span>COMPOSING…</span>
-              <span class="prog-pct" id="progPct">0%</span>
-            </div>
+          <div class="state" id="stateProc" role="status">
+            <div class="prog-row"><span>COMPOSING…</span><span class="prog-pct" id="progPct">0%</span></div>
             <div class="prog-bar-wrap"><div class="prog-bar-fill" id="progBar"></div></div>
             <div class="state-sub">⚡ VOICE-Z is at work</div>
           </div>
 
-          <div class="state" id="stateResult" role="region" aria-label="Generated track" style="width:100%;">
+          <div class="state" id="stateResult" role="region" style="width:100%;">
             <div class="state-title">✨ Track ready</div>
             <div class="result-box" style="width:100%;">
               <h4>YOUR TRACK</h4>
-              <audio id="player" controls aria-label="Generated music track"></audio>
+              <audio id="player" controls></audio>
               <a id="dlLink" href="#" class="btn-dl" download>
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
                 Save Track
               </a>
             </div>
             <button class="btn-reset" onclick="resetApp()">Generate another track</button>
           </div>
 
-        </div></div></div>
+        </div>
+      </div>
+    </div>
   </section>
 
   <div class="divider"></div>
@@ -880,14 +809,14 @@ input[type="range"]::-moz-range-thumb{
       </div>
       <div class="grid-2">
         <div class="feat-card">
-          <div class="feat-icon" aria-hidden="true">🎵</div>
+          <div class="feat-icon">🎵</div>
           <div class="feat-name">Hire us on Fiverr</div>
           <p class="feat-desc">Professional AI audio, custom song creation, mixing, and mastering from our top-rated team.</p>
           <span class="feat-badge">Pro Services</span><br>
           <a href="https://www.fiverr.com/voicezai" target="_blank" rel="noopener noreferrer" class="feat-link">View Fiverr Gigs →</a>
         </div>
         <div class="feat-card">
-          <div class="feat-icon" aria-hidden="true">🎹</div>
+          <div class="feat-icon">🎹</div>
           <div class="feat-name">Hire us on Zeerk</div>
           <p class="feat-desc">Unlock premium AI audio services. We compose, arrange, and deliver complete high-fidelity tracks.</p>
           <span class="feat-badge">Enterprise Ready</span><br>
@@ -902,7 +831,7 @@ input[type="range"]::-moz-range-thumb{
     <div class="coming-title">Free RVC Creator &amp; Voice Cloner — Coming Soon</div>
     <p class="coming-sub">We're building the ultimate web-based voice training portal. Stay tuned.</p>
     <a href="https://www.youtube.com/@Voice-zAI" target="_blank" rel="noopener noreferrer" class="btn-yt">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/></svg>
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/></svg>
       Subscribe for Updates
     </a>
   </section>
@@ -910,7 +839,7 @@ input[type="range"]::-moz-range-thumb{
 
 <script>
 /* ─── CONFIG ──────────────────────────────────────────── */
-// ⚠️ UPDATE THIS URL TO YOUR CURRENT NGROK URL:
+// 👇 IMPORTANT: Set this to your CURRENT ngrok URL (from the ngrok terminal)
 const API_BASE = 'https://everybody-countable-shone.ngrok-free.dev';
 
 /* ─── PRESETS ─────────────────────────────────────────── */
@@ -958,18 +887,15 @@ function fmtDuration(s) {
   const m = Math.floor(s / 60), sec = s % 60;
   return `${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}`;
 }
-
 function onSlider(el) {
   document.getElementById('durDisplay').textContent = fmtDuration(parseInt(el.value));
 }
-
 function onPromptInput(el) {
   const n = el.value.length;
   const row = document.getElementById('charRow');
   row.textContent = n + ' / 1000';
   row.className = 'char-row mono' + (n >= 900 ? ' warn' : n >= 50 ? ' good' : '');
 }
-
 function showState(id) {
   ['stateForm','stateQueue','stateProc','stateResult'].forEach(s => {
     const el = document.getElementById(s);
@@ -980,14 +906,13 @@ function showState(id) {
   target.style.display = 'flex';
   target.classList.add('active');
 }
-
 function toast(type, msg) {
   const area = document.getElementById('toastArea');
   const el = document.createElement('div');
   el.className = 'toast t-' + type;
   el.setAttribute('role', 'alert');
   const color = type === 'error' ? '#ff4433' : type === 'success' ? '#7fd858' : '#ff9d2e';
-  el.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="${color}" stroke-width="2" style="flex-shrink:0" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg><div>${msg}</div>`;
+  el.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="${color}" stroke-width="2" style="flex-shrink:0"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg><div>${msg}</div>`;
   area.appendChild(el);
   setTimeout(() => {
     el.style.transition = 'opacity 0.3s, transform 0.3s';
@@ -1007,7 +932,6 @@ function handleRefAudio(input) {
   refFile = f;
   document.getElementById('refFileName').textContent = '✓ ' + f.name;
 }
-
 function clearRefAudio() {
   refFile = null;
   document.getElementById('refFile').value = '';
@@ -1015,7 +939,6 @@ function clearRefAudio() {
   toast('success', 'Reference audio cleared.');
 }
 
-/* ─── PRESET ──────────────────────────────────────────── */
 document.getElementById('presetSelect').addEventListener('change', function () {
   if (this.value && PRESETS[this.value]) {
     const ta = document.getElementById('promptText');
@@ -1024,7 +947,6 @@ document.getElementById('presetSelect').addEventListener('change', function () {
   }
 });
 
-/* ─── BUILD PROMPT ────────────────────────────────────── */
 function buildPrompt() {
   const title = document.getElementById('songTitle').value.trim() || 'Untitled';
   let desc = document.getElementById('promptText').value.trim();
@@ -1085,7 +1007,6 @@ async function generate() {
   const duration = parseInt(document.getElementById('durSlider').value, 10);
   document.getElementById('btnGen').disabled = true;
   showState('stateQueue');
-  console.log('🚀 Generate called, API_BASE =', API_BASE);
 
   try {
     const fd = new FormData();
@@ -1096,7 +1017,6 @@ async function generate() {
     const ctrl = new AbortController();
     const tid = setTimeout(() => ctrl.abort(), 60000);
 
-    console.log('📤 Sending /api/generate request...');
     const res = await fetch(`${API_BASE}/api/generate`, { 
       method: 'POST', 
       body: fd, 
@@ -1104,19 +1024,15 @@ async function generate() {
     });
     clearTimeout(tid);
 
-    console.log('📥 Response status:', res.status);
     if (!res.ok) {
       const e = await res.json().catch(() => ({}));
       throw new Error(e.error || `Server error (${res.status})`);
     }
     const data = await res.json();
-    console.log('📦 Generate response:', data);
     if (!data.jobId) throw new Error('No job ID returned from server.');
-    console.log('✅ Job started with ID:', data.jobId);
     poll(data.jobId);
   } catch (err) {
     clearInterval(progTimer);
-    console.error('❌ Generate error:', err);
     if (err.name === 'AbortError') toast('error', 'Request timed out. Please try again.');
     else if (!navigator.onLine) toast('error', 'No internet connection.');
     else toast('error', err.message);
@@ -1127,19 +1043,12 @@ async function generate() {
 /* ─── POLL ────────────────────────────────────────────── */
 function poll(jobId) {
   let attempts = 0;
-  const maxAttempts = 60; // 3 minutes
-  console.log(`⏳ Starting poll for job ${jobId}, max attempts ${maxAttempts}`);
-
+  const maxAttempts = 60;
   const interval = setInterval(async () => {
     attempts++;
     try {
-      const url = `${API_BASE}/api/status/${jobId}`;
-      console.log(`🔍 Poll #${attempts}: fetching ${url}`);
-      const res = await fetch(url);
-      console.log(`📡 Status response: ${res.status} ${res.statusText}`);
-
+      const res = await fetch(`${API_BASE}/api/status/${jobId}`);
       if (!res.ok) {
-        console.warn(`⚠️ Status returned ${res.status}`);
         if (attempts >= maxAttempts) {
           clearInterval(interval);
           toast('error', 'Timed out waiting for track.');
@@ -1147,21 +1056,15 @@ function poll(jobId) {
         }
         return;
       }
-
       const d = await res.json();
-      console.log('📦 Status payload:', d);
 
       if (d.status === 'queued') {
-        // still waiting
+        // stay
       } else if (d.status === 'processing') {
-        if (!progActive) {
-          showState('stateProc');
-          startProg();
-        }
+        if (!progActive) { showState('stateProc'); startProg(); }
       } else if (d.status === 'completed') {
         clearInterval(interval);
         finishProg();
-        console.log('🎉 Job completed, audioUrl/file_path:', d.audioUrl || d.file_path);
         setTimeout(() => showResult(d.audioUrl || d.file_path, jobId), 500);
       } else if (d.status === 'failed') {
         clearInterval(interval);
@@ -1173,7 +1076,6 @@ function poll(jobId) {
         resetApp();
       }
     } catch (err) {
-      console.error('❌ Polling fetch error:', err);
       if (attempts >= maxAttempts) {
         clearInterval(interval);
         toast('error', 'Lost connection to server. Refresh and try again.');
@@ -1186,8 +1088,6 @@ function poll(jobId) {
 /* ─── SHOW RESULT ─────────────────────────────────────── */
 function showResult(src, jobId) {
   let url;
-  console.log('🎵 Result source:', src);
-  
   if (src && src.startsWith('/')) {
       url = API_BASE + src;
   } 
@@ -1198,14 +1098,11 @@ function showResult(src, jobId) {
       url = `${API_BASE}/v1/audio?task_id=${jobId}`;
   }
 
-  console.log('🎵 Final audio URL:', url);
-
   const player = document.getElementById('player');
   const dl = document.getElementById('dlLink');
   
   player.src = url; 
   player.load();
-  
   dl.href = url;
   dl.download = `VOICE-Z_Generated_Track_${Date.now()}.mp3`;
 
@@ -1213,22 +1110,6 @@ function showResult(src, jobId) {
   toast('success', 'Your track is ready — hit play.');
   document.getElementById('btnGen').disabled = false;
 }
-
-/* ─── MANUAL STATUS CHECK (for debugging) ────────────── */
-window.checkStatus = async function(jobId) {
-  if (!jobId) { console.warn('Please provide a jobId, e.g. checkStatus("abc123")'); return; }
-  try {
-    const url = `${API_BASE}/api/status/${jobId}`;
-    console.log(`🔍 Manual check: ${url}`);
-    const res = await fetch(url);
-    console.log('📡 Status:', res.status);
-    const data = await res.json();
-    console.log('📦 Data:', data);
-    return data;
-  } catch (e) {
-    console.error('❌ Manual check failed:', e);
-  }
-};
 
 /* ─── INIT ────────────────────────────────────────────── */
 showState('stateForm');
@@ -1245,8 +1126,7 @@ document.getElementById('refClearBtn').addEventListener('keydown', function(e) {
   }
 });
 
-console.log('✅ VOICE-Z frontend loaded, API_BASE =', API_BASE);
-console.log('ℹ️  To manually check a job status, type checkStatus("your-job-id") in the console.');
+console.log('✅ Frontend loaded. API_BASE =', API_BASE);
 </script>
 </body>
 </html>
